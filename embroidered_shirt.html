@@ -1,0 +1,297 @@
+<section class="embroidered-collection">
+  <h2>Embroidered Collection</h2>
+  <div class="embroidered-grid">
+    
+    <style>
+        .embroidered-collection {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.embroidered-collection h2 {
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+  color: #c97c90;
+}
+
+.embroidered-grid {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.embroidered-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  width: 300px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.carousel {
+  overflow: hidden;
+  border-radius: 10px;
+  position: relative;
+  max-height: 450px;
+}
+
+.carousel-track img {
+  width: 100%;
+  max-height: 450px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.embroidered-grid {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch; /* <- ensures all cards are same height */
+}
+
+
+.embroidered-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.carousel-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+  gap: 10px;
+}
+
+.carousel-buttons button {
+  background: #c97c90;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.product-info {
+  margin-top: 15px;
+}
+
+.product-info h3 {
+  font-size: 1.1rem;
+  color: #c97c90;
+}
+
+.product-info .price {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #444;
+}
+.product-info select {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 100%;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.product-info .btn {
+  width: 100%;
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background-color: #c97c90;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.product-info .btn:hover {
+  background-color: #a4556e;
+}
+@media (max-width: 768px) {
+  .embroidered-card {
+    width: 90%;
+  }
+
+  .carousel-track img {
+    width: 100%;
+  }
+}
+.carousel-track {
+  display: flex;
+  overflow-x: auto; /* enable horizontal scrolling */
+  scroll-behavior: smooth; /* smooth slide */
+}
+
+
+
+
+    </style>
+    <!-- Shirt 1 -->
+    <div class="embroidered-card">
+      <div class="carousel">
+        <div class="carousel-track" id="carousel1">
+          <img src="images/shirt1.jpg">
+          <img src="images/shirt2.jpg">
+          <img src="images/shirt3.jpg">
+          <img src="images/shirt4.jpg">
+          <img src="images/shirt5.jpg">
+        </div>
+        <div class="carousel-buttons">
+          <button onclick="prevSlide('carousel1')">‹</button>
+          <button onclick="nextSlide('carousel1')">›</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <h3>Embroidered Cotton Shirt</h3>
+        <p class="price">₹1199</p>
+        <select>
+          <option>Select Size</option>
+          <option>S</option><option>M</option><option>L</option><option>XL</option>
+        </select>
+        <button class="btn">Add to Cart</button>
+      </div>
+    </div>
+
+    <!-- Shirt 2 -->
+    <div class="embroidered-card">
+      <div class="carousel">
+        <div class="carousel-track" id="carousel2">
+          <img src="images/shirt6.jpg">
+          <img src="images/shirt7.jpg">
+          <img src="images/shirt8.jpg">
+          <img src="images/shirt9.jpg">
+        </div>
+        <div class="carousel-buttons">
+          <button onclick="prevSlide('carousel2')">‹</button>
+          <button onclick="nextSlide('carousel2')">›</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <h3>Rose Embroidered Shirt</h3>
+        <p class="price">₹1399</p>
+        <select>
+          <option>Select Size</option>
+          <option>S</option><option>M</option><option>L</option><option>XL</option>
+        </select>
+        <button class="btn">Add to Cart</button>
+      </div>
+    </div>
+    <!-- Shirt 3 -->
+<div class="embroidered-card">
+  <div class="carousel">
+    <div class="carousel-track" id="carousel3">
+      <img src="images/shirt10.JPG">
+      <img src="images/shirt11.JPG">
+      <img src="images/shirt12.JPG">
+      <img src="images/shirt13.JPEG">
+    </div>
+    <div class="carousel-buttons">
+      <button onclick="prevSlide('carousel3')">‹</button>
+      <button onclick="nextSlide('carousel3')">›</button>
+    </div>
+  </div>
+  <div class="product-info">
+    <h3>Pastel Thread Shirt</h3>
+    <p class="price">₹1299</p>
+    <select>
+      <option>Select Size</option>
+      <option>S</option><option>M</option><option>L</option><option>XL</option>
+    </select>
+    <button class="btn">Add to Cart</button>
+  </div>
+</div>
+    <!-- Shirt 4 -->
+<div class="embroidered-card">
+  <div class="carousel">
+    <div class="carousel-track" id="carousel4">
+      <img src="images/shirt14.JPG">
+      <img src="images/shirt15.JPG">
+      <img src="images/shirt16.JPG">
+      <img src="images/shirt17.JPG">
+    </div>
+    <div class="carousel-buttons">
+      <button onclick="prevSlide('carousel4')">‹</button>
+      <button onclick="nextSlide('carousel4')">›</button>
+    </div>
+  </div>
+  <div class="product-info">
+    <h3>Pastel Thread Shirt</h3>
+    <p class="price">₹1299</p>
+    <select>
+      <option>Select Size</option>
+      <option>S</option><option>M</option><option>L</option><option>XL</option>
+    </select>
+    <button class="btn">Add to Cart</button>
+  </div>
+</div>
+    <!-- Shirt 5 -->
+<div class="embroidered-card">
+  <div class="carousel">
+    <div class="carousel-track" id="carousel5">
+      <img src="images/shirt18.JPG">
+      <img src="images/shirt19.JPG">
+      <img src="images/shirt20.JPG">
+    </div>
+    <div class="carousel-buttons">
+      <button onclick="prevSlide('carousel5')">‹</button>
+      <button onclick="nextSlide('carousel5')">›</button>
+    </div>
+  </div>
+  <div class="product-info">
+    <h3>Pastel Thread Shirt</h3>
+    <p class="price">₹1299</p>
+    <select>
+      <option>Select Size</option>
+      <option>S</option><option>M</option><option>L</option><option>XL</option>
+    </select>
+    <button class="btn">Add to Cart</button>
+  </div>
+</div>
+    <!-- Shirt 6 -->
+<div class="embroidered-card">
+  <div class="carousel">
+    <div class="carousel-track" id="carousel6">
+      <img src="images/shirt24.JPG">
+      <img src="images/shirt21.JPG">
+      <img src="images/shirt22.JPG">
+      <img src="images/shirt23.JPG">
+    </div>
+    <div class="carousel-buttons">
+      <button onclick="prevSlide('carousel6')">‹</button>
+      <button onclick="nextSlide('carousel6')">›</button>
+    </div>
+  </div>
+  <div class="product-info">
+    <h3>Pastel Thread Shirt</h3>
+    <p class="price">₹1299</p>
+    <select>
+      <option>Select Size</option>
+      <option>S</option><option>M</option><option>L</option><option>XL</option>
+    </select>
+    <button class="btn">Add to Cart</button>
+  </div>
+</div>
+
+  </div>
+</section>
+<script>
+  function nextSlide(id) {
+    const track = document.getElementById(id);
+    const imgWidth = track.querySelector('img').clientWidth;
+    track.scrollLeft += imgWidth;
+  }
+
+  function prevSlide(id) {
+    const track = document.getElementById(id);
+    const imgWidth = track.querySelector('img').clientWidth;
+    track.scrollLeft -= imgWidth;
+  }
+</script>
+

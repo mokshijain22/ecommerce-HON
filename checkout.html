@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout - House of Niree</title>
+  <link rel="stylesheet" href="HON.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script>
+    emailjs.init("YWQnPK8PUDEqRckUX"); // 👈 Replace with your EmailJS public key
+  </script>
+</head>
+<body>
+  <header class="navbar">
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+    <div class="logo">House of Niree</div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="wishlist.html">💖 Wishlist</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="checkout">
+    <a href="cart.html" class="back-to-cart">← Back to Cart</a>
+    <h2>Checkout</h2>
+    <form id="checkout-form">
+      <label>Full Name:</label>
+      <input type="text" id="name" required />
+      <label>Email:</label>
+      <input type="email" id="email" required />
+      <label>Phone Number:</label>
+      <input type="tel" id="phone" required />
+      <label>Shipping Address:</label>
+      <textarea id="address" required></textarea>
+      <label>Payment Method:</label>
+      <select id="payment" required>
+        <option value="">Select</option>
+        <option>Cash on Delivery</option>
+        <option>UPI</option>
+        <option>Credit/Debit Card</option>
+      </select>
+
+      <h3>Order Summary</h3>
+      <div id="order-summary"></div>
+      <h3 id="order-total">Total: ₹0</h3>
+
+      <button type="submit" class="btn">Place Order</button>
+    </form>
+  </section>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDAIDgMVPJW70T0RoGNHGTWJ6urRPiHzU8",
+      authDomain: "house-of-niree.firebaseapp.com",
+      projectId: "house-of-niree",
+      storageBucket: "house-of-niree.firebasestorage.app",
+      messagingSenderId: "625684329140",
+      appId: "1:625684329140:web:45645bfa810169db971de1",
+      measurementId: "G-2CL9W1PHL4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    let currentUserEmail = null;
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        currentUserEmail = user.email;
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const summary = document.getElementById("order-summary");
+      const totalDiv = document.getElementById("order-total");
+      let total = 0;
+
+      cart.forEach(item => {
+        const line = document.createElement("p");
+        line.innerText = `${item.name} (Qty: ${item.quantity}) - ₹${item.price * item.quantity}`;
+        summary.appendChild(line);
+        total += item.price * item.quantity;
+      });
+
+      totalDiv.innerText = `Total: ₹${total}`;
+
+      document.getElementById("checkout-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const phone = document.getElementById("phone").value;
+        const address = document.getElementById("address").value;
+        const payment = document.getElementById("payment").value;
+
+        try {
+          await addDoc(collection(db, "orders"), {
+            user: currentUserEmail,
+            name,
+            email,
+            phone,
+            address,
+            payment,
+            cart,
+            total,
+            placedAt: new Date(),
+            status: "pending"
+          });
+
+          // ✅ jsPDF Receipt
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF();
+          doc.setFontSize(16);
+          doc.text("House of Niree - Order Receipt", 20, 20);
+          doc.setFontSize(12);
+          doc.text(`Name: ${name}`, 20, 30);
+          doc.text(`Email: ${email}`, 20, 40);
+          doc.text(`Phone: ${phone}`, 20, 50);
+          doc.text(`Payment: ${payment}`, 20, 60);
+          doc.text(`Address: ${address}`, 20, 70);
+          doc.text(`Total: ₹${total}`, 20, 80);
+
+          let y = 90;
+          cart.forEach((item, i) => {
+            doc.text(`${i + 1}. ${item.name} (x${item.quantity}) - ₹${item.price * item.quantity}`, 20, y);
+            y += 10;
+          });
+
+          doc.save("order_receipt.pdf");
+
+          // ✅ EmailJS Send Email
+          const orderSummaryText = cart.map(item =>
+            `${item.name} x${item.quantity} - ₹${item.price * item.quantity}`
+          ).join("\n");
+
+          emailjs.send("service_ylzs5de", "template_nkk2ebj", {
+            user_name: name,
+            order_summary: orderSummaryText,
+            order_total: total,
+            email: email
+            })
+            .then(() => {
+            console.log("✅ Email sent successfully!");
+            })
+            .catch((error) => {
+            console.error("❌ Email sending failed:", error);
+            });
+
+            alert("Order placed & receipt downloaded!");
+          localStorage.removeItem("cart");
+          localStorage.setItem("orderTotal", total);
+          localStorage.setItem("orderItems", JSON.stringify(cart));
+          window.location.href = "thankyou.html";
+        } catch (err) {
+          alert("Failed to place order: " + err.message);
+        }
+      });
+    });
+  </script>
+
+  <script>
+    function toggleMenu() {
+      const menu = document.querySelector('.navbar ul');
+      menu.classList.toggle('active');
+    }
+  </script>
+</body>
+</html>

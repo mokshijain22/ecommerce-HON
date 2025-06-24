@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Products - House of Niree</title>
+  <link rel="stylesheet" href="HON.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">House of Niree</div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="product_detail.html">Products</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="checkout.html">Checkout</a></li>
+        <li><a href="wishlist.html">💖 Wishlist</a></li>
+        <li id="user-greeting"></li>
+        <li id="logout-link" style="display:none;"><a href="#">Logout</a></li>
+        <li id="login-link"><a href="login.html">Login</a></li>
+      </ul>
+    </nav>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+  </header>
+
+  <!-- Filter Buttons -->
+  <div class="filter-buttons">
+    <button onclick="filterProducts('all')">All</button>
+    <button onclick="filterProducts('ethnic')">Ethnic</button>
+    <button onclick="filterProducts('western')">Western</button>
+    <button onclick="filterProducts('accessories')">Accessories</button>
+    <button onclick="filterProducts('shirts')">Shirts</button>
+
+</div>
+
+  <!-- Product Grid -->
+  <section class="product-grid">
+    <div class="product-card" data-category="shirts">
+        <img src="images/shirt1.jpg" alt="Shirt" />
+        <h3>Casual Oversized Shirt</h3>
+        <p>₹999</p>
+        <button onclick="openQuickView('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">Quick View</button>
+        <button onclick="addToWishlist('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">❤️ Save to Wishlist</button>
+    </div>
+
+    <div class="product-card" data-category="shirts" onclick="openQuickView('Striped Cotton Shirt', 999, 'images/shirt2.jpg', 'Stylish striped shirt for a relaxed yet sharp look.')">
+        <img src="images/shirt2.jpg" alt="Striped Shirt" />
+        <h3>Striped Cotton Shirt</h3>
+        <p>₹999</p>
+        <button onclick="openQuickView('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">Quick View</button>
+        <button onclick="addToWishlist('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">❤️ Save to Wishlist</button>
+    </div>
+
+    <div class="product-card" data-category="ethnic" onclick="openQuickView('Pastel Cotton Kurti', 999, 'images/kurtis1.jpg', 'Light pastel cotton kurti for daily elegance.')">
+      <img src="images/kurtis1.jpg" alt="Elegant Kurtis" />
+      <h3>Pastel Cotton Kurti</h3>
+      <p>₹999</p>
+      <button onclick="openQuickView('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">Quick View</button>
+      <button onclick="addToWishlist('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">❤️ Save to Wishlist</button>
+    </div>
+
+    <div class="product-card" data-category="western" onclick="openQuickView('Floral Summer Dress', 1299, 'images/dress1.jpg', 'Floral dress perfect for brunches and evenings.')">
+      <img src="images/dress1.jpg" alt="Floral Dress" />
+      <h3>Floral Summer Dress</h3>
+      <p>₹1299</p>
+      <button onclick="openQuickView('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">Quick View</button>
+      <button onclick="addToWishlist('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">❤️ Save to Wishlist</button>
+    </div>
+
+    <div class="product-card" data-category="accessories" onclick="openQuickView('Gold-Plated Necklace', 499, 'images/jewelry1.jpg', 'Elegant gold-plated jewelry for every occasion.')">
+      <img src="images/jewelry1.jpg" alt="Jewelry" />
+      <h3>Gold-Plated Necklace</h3>
+      <p>₹499</p>
+      <button onclick="openQuickView('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">Quick View</button>
+      <button onclick="addToWishlist('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">❤️ Save to Wishlist</button>
+    </div>
+  </section>
+
+  <!-- Quick View Modal -->
+  <div id="quickViewModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <img id="modal-img" src="" alt="Product" />
+      <h3 id="modal-name"></h3>
+      <p id="modal-price"></p>
+      <p id="modal-desc"></p>
+      <button id="modal-add" class="btn">Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Firebase Auth + Nav Toggle -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDAIDgMVPJW70T0RoGNHGTWJ6urRPiHzU8",
+      authDomain: "house-of-niree.firebaseapp.com",
+      projectId: "house-of-niree",
+      storageBucket: "house-of-niree.firebasestorage.app",
+      messagingSenderId: "625684329140",
+      appId: "1:625684329140:web:45645bfa810169db971de1",
+      measurementId: "G-2CL9W1PHL4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const greeting = document.getElementById("user-greeting");
+    const logoutLink = document.getElementById("logout-link");
+    const loginLink = document.getElementById("login-link");
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        greeting.innerText = `Hi, ${user.email}`;
+        logoutLink.style.display = "inline-block";
+        loginLink.style.display = "none";
+      }
+    });
+
+    logoutLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => {
+        alert("Logged out!");
+        window.location.href = "index.html";
+      });
+    });
+  </script>
+
+  <!-- Filtering, Cart, Modal, Hamburger -->
+  <script>
+    function toggleMenu() {
+      const menu = document.querySelector('.navbar ul');
+      menu.classList.toggle('active');
+    }
+
+    function filterProducts(category) {
+      const products = document.querySelectorAll(".product-card");
+      products.forEach((card) => {
+        if (category === "all" || card.dataset.category === category) {
+          card.style.display = "block";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    }
+
+    function addToCart(name, price) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.push({ name, price, quantity: 1 });
+      localStorage.setItem("cart", JSON.stringify(cart));
+      alert(`${name} added to cart!`);
+    }
+
+    const modal = document.getElementById("quickViewModal");
+    const modalImg = document.getElementById("modal-img");
+    const modalName = document.getElementById("modal-name");
+    const modalPrice = document.getElementById("modal-price");
+    const modalDesc = document.getElementById("modal-desc");
+    const modalAdd = document.getElementById("modal-add");
+
+    function openQuickView(name, price, img, desc = "Graceful fashion for modern women.") {
+      modal.style.display = "block";
+      modalImg.src = img;
+      modalName.textContent = name;
+      modalPrice.textContent = "₹" + price;
+      modalDesc.textContent = desc;
+
+      modalAdd.onclick = () => addToCart(name, price);
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      if (event.target === modal) closeModal();
+    }
+  </script>
+<script>
+  // Show all products when page loads
+  window.addEventListener('DOMContentLoaded', () => {
+    filterProducts('all');
+  });
+
+  function addToWishlist(name, price, image) {
+  let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+  const exists = wishlist.some(item => item.name === name);
+
+  if (!exists) {
+    wishlist.push({ name, price, image });
+    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+    alert(`${name} added to wishlist! ❤️`);
+  } else {
+    alert("Already in wishlist!");
+  }
+}
+
+</script>
+
+</body>
+</html>

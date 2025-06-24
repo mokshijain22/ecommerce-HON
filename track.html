@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Orders - House of Niree</title>
+  <link rel="stylesheet" href="HON.css">
+  <style>
+    .track-container {
+      max-width: 700px;
+      margin: 80px auto;
+      padding: 20px;
+      text-align: center;
+      background: #fff0f5;
+      border-radius: 12px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .order-card {
+      background: #fff;
+      margin: 20px 0;
+      padding: 15px;
+      border-left: 4px solid #c97c90;
+      border-radius: 8px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="track-container">
+    <h2>Track Your Orders</h2>
+    <input type="email" id="trackEmail" placeholder="Enter your email" required>
+    <button class="btn" onclick="trackOrders()">Search</button>
+
+    <div id="ordersResult"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDAIDgMVPJW70T0RoGNHGTWJ6urRPiHzU8",
+      authDomain: "house-of-niree.firebaseapp.com",
+      projectId: "house-of-niree",
+      storageBucket: "house-of-niree.firebasestorage.app",
+      messagingSenderId: "625684329140",
+      appId: "1:625684329140:web:45645bfa810169db971de1",
+      measurementId: "G-2CL9W1PHL4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.trackOrders = async function () {
+      const email = document.getElementById("trackEmail").value;
+      const ordersResult = document.getElementById("ordersResult");
+      ordersResult.innerHTML = "";
+
+      if (!email) {
+        alert("Please enter your email.");
+        return;
+      }
+
+      const q = query(collection(db, "orders"), where("email", "==", email));
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        ordersResult.innerHTML = "<p>No orders found.</p>";
+        return;
+      }
+
+      snapshot.forEach(doc => {
+        const order = doc.data();
+        const div = document.createElement("div");
+        div.className = "order-card";
+        div.innerHTML = `
+          <h3>${order.name}</h3>
+          <p><strong>Status:</strong> ${order.status}</p>
+          <p><strong>Payment:</strong> ${order.payment}</p>
+          <p><strong>Total:</strong> ₹${order.total}</p>
+          <p><strong>Date:</strong> ${order.placedAt.toDate().toLocaleString()}</p>
+          <ul>
+            ${order.cart.map(item => `<li>${item.name} x${item.quantity} - ₹${item.price * item.quantity}</li>`).join("")}
+          </ul>
+        `;
+        ordersResult.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard - House of Niree</title>
+  <link rel="stylesheet" href="HON.css" />
+  <style>
+    .admin-dashboard {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #fff9f9;
+    }
+
+    .order-card {
+      background: white;
+      border: 1px solid #ffe1eb;
+      border-left: 5px solid #c97c90;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 14px rgba(0,0,0,0.05);
+    }
+
+    .order-card h3 {
+      color: #c97c90;
+      margin-bottom: 8px;
+    }
+
+    .order-card p {
+      font-size: 14px;
+      margin: 4px 0;
+    }
+
+    .order-card ul {
+      margin: 10px 0 0 18px;
+    }
+
+    .btn, .delete-order-btn, .status-toggle-btn {
+      background-color: #c97c90;
+      color: white;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      margin-right: 10px;
+    }
+
+    .delete-order-btn {
+      background-color: #ff4d4f;
+    }
+
+    .status-text.pending {
+      color: red;
+      font-weight: bold;
+    }
+
+    .status-text.delivered {
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+    <div class="logo">House of Niree</div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="login.html">Logout</a></li>
+        <li><a href="wishlist.html">💖 Wishlist</a></li>
+
+      </ul>
+    </nav>
+  </header>
+
+  <section class="admin-dashboard">
+    <h2>Order Dashboard</h2>
+    <button id="exportCSV" class="btn" style="margin-bottom: 20px;">📥 Download Orders (CSV)</button>
+    <div id="orders-container"></div>
+  </section>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDAIDgMVPJW70T0RoGNHGTWJ6urRPiHzU8",
+      authDomain: "house-of-niree.firebaseapp.com",
+      projectId: "house-of-niree",
+      storageBucket: "house-of-niree.firebasestorage.app",
+      messagingSenderId: "625684329140",
+      appId: "1:625684329140:web:45645bfa810169db971de1",
+      measurementId: "G-2CL9W1PHL4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const ordersRef = collection(db, "orders");
+      const ordersSnapshot = await getDocs(ordersRef);
+      const ordersContainer = document.getElementById("orders-container");
+
+      if (ordersSnapshot.empty) {
+        ordersContainer.innerHTML = "<p>No orders found.</p>";
+        return;
+      }
+
+      ordersSnapshot.forEach(orderDoc => {
+        const order = orderDoc.data();
+        const orderId = orderDoc.id;
+        const div = document.createElement("div");
+        div.className = "order-card";
+        div.setAttribute("data-id", orderId);
+
+        const status = order.status || "pending";
+        div.innerHTML = `
+          <h3>${order.name} (${order.email})</h3>
+          <p><strong>Phone:</strong> ${order.phone}</p>
+          <p><strong>Payment:</strong> ${order.payment}</p>
+          <p><strong>Address:</strong> ${order.address}</p>
+          <p><strong>Total:</strong> ₹${order.total}</p>
+          <p><strong>Date:</strong> ${order.placedAt.toDate().toLocaleString()}</p>
+          <strong>Items:</strong>
+          <ul>
+            ${order.cart.map(item => `<li>${item.name} x${item.quantity} (₹${item.price * item.quantity})</li>`).join("")}
+          </ul>
+          <p><strong>Status:</strong> <span class="status-text ${status === 'delivered' ? 'delivered' : 'pending'}">${status}</span></p>
+          <button class="status-toggle-btn">✔️ Mark as ${status === 'delivered' ? 'Pending' : 'Delivered'}</button>
+          <button class="delete-order-btn">🗑️ Delete Order</button>
+        `;
+
+        ordersContainer.appendChild(div);
+
+        div.querySelector(".delete-order-btn").addEventListener("click", async () => {
+          const confirmDelete = confirm("Are you sure you want to delete this order?");
+          if (!confirmDelete) return;
+
+          await deleteDoc(doc(db, "orders", orderId));
+          div.remove();
+          alert("Order deleted!");
+        });
+
+        div.querySelector(".status-toggle-btn").addEventListener("click", async () => {
+          const newStatus = status === "delivered" ? "pending" : "delivered";
+          await updateDoc(doc(db, "orders", orderId), {
+            status: newStatus
+          });
+          alert("Order status updated!");
+          location.reload();
+        });
+      });
+    });
+  </script>
+
+  <script>
+    function toggleMenu() {
+      const menu = document.querySelector('.navbar ul');
+      menu.classList.toggle('active');
+    }
+
+    document.getElementById("exportCSV").addEventListener("click", () => {
+      const rows = [["Name", "Email", "Phone", "Payment", "Address", "Total", "Date", "Items", "Status"]];
+      const cards = document.querySelectorAll(".order-card");
+
+      cards.forEach(card => {
+        const name = card.querySelector("h3")?.innerText || "";
+        const email = name.match(/\((.*?)\)/)?.[1] || "";
+        const nameOnly = name.split(" (")[0];
+
+        const phone = card.innerHTML.match(/<strong>Phone:<\/strong> (.*?)<\/p>/)?.[1] || "";
+        const payment = card.innerHTML.match(/<strong>Payment:<\/strong> (.*?)<\/p>/)?.[1] || "";
+        const address = card.innerHTML.match(/<strong>Address:<\/strong> (.*?)<\/p>/)?.[1] || "";
+        const total = card.innerHTML.match(/<strong>Total:<\/strong> ₹(.*?)<\/p>/)?.[1] || "";
+        const date = card.innerHTML.match(/<strong>Date:<\/strong> (.*?)<\/p>/)?.[1] || "";
+        const status = card.querySelector(".status-text")?.innerText || "";
+
+        const itemsList = card.querySelectorAll("ul li");
+        const items = [...itemsList].map(li => li.innerText.replace(/[\n\r]/g, "")).join(" | ");
+
+        rows.push([nameOnly, email, phone, payment, address, total, date, items, status]);
+      });
+
+      const csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.map(x => `"${x}"`).join(",")).join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "house_of_niree_orders.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  </script>
+</body>
+</html>

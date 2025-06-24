@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>House of Niree</title>
+  <link rel="stylesheet" href="HON.css" />
+    <!-- Add inside your <head> tag -->
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+
+</head>
+<body>
+
+
+  <!-- Header -->
+<header class="navbar">
+  <a href="index.html" class="brand-area">
+    <img src="images/brand-tag.jpg" alt="House of Niree Logo" class="brand-icon" />
+    <span class="brand-text">House of Niree</span>
+  </a>
+
+  <nav class="nav-links" id="navMenu">
+    <ul>
+      <li><a href="#">New In</a></li>
+      <li><a href="product_detail.html">Ethnic</a></li>
+      <li><a href="product_detail.html">Western</a></li>
+      <li><a href="product_detail.html">Accessories</a></li>
+      <li><a href="wishlist.html">💖 Wishlist</a></li>
+      <li><a href="#">Sale</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hamburger icon --><!-- Hamburger + Close Button -->
+<div class="hamburger" onclick="toggleMenu()" id="hamburger">&#9776;</div>
+<div class="close-icon" onclick="toggleMenu()" id="closeIcon">&times;</div>
+
+</header>
+
+
+  <!-- Hero Swiping Banner -->
+  <section class="hero-carousel">
+    <div class="slides fade">
+      <img src="images/banner1.png" alt="Banner 1" />
+    </div>
+    <div class="slides fade">
+      <img src="images/banner2.png" alt="Banner 2" />
+    </div>
+    <div class="slides fade">
+      <img src="images/banner3.png" alt="Banner 3" />
+    </div>
+    <div class="slides fade">
+      <img src="images/banner4.png" alt="Banner 4" />
+    </div>
+  </section>
+
+  <!-- Featured Collections -->
+  <section class="collections">
+    <h2>Featured Collections</h2>
+    
+    <div class="collection-grid">
+        <div class="collection-card">
+      <img src="images/shirt1.jpg" alt="Embroidered Shirt" />
+      <h3>Embroidered Shirt</h3>
+      <p>₹999</p>
+      <a href="embroidered_shirt.html" class="btn">View</a>
+    </div>
+      <div class="collection-card">
+        <img src="images/evening.jpg" />
+        <p>Elegant Evening Wear</p>
+      </div>
+      <div class="collection-card">
+        <img src="images/casual.jpg" />
+        <p>Chic Casual Styles</p>
+      </div>
+      <div class="collection-card">
+        <img src="images/outerwear.jpg" />
+        <p>Sophisticated Outerwear</p>
+      </div>
+          
+
+    </div>
+
+
+    <!-- Add more collection cards as needed -->
+  </div>
+</section>
+
+  </section>
+
+  <!-- Style Assistant Button -->
+  <div class="assistant-button">
+    <button class="btn">🪄 Style Assistant</button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2025 House of Niree. All Rights Reserved.</p>
+  </footer>
+
+  <!-- JS Scripts -->
+  <script>
+    function toggleMenu() {
+      const menu = document.querySelector('.navbar ul');
+      menu.classList.toggle('active');
+    }
+
+    // Auto Swiper for Hero Banner
+    let slideIndex = 0;
+    showSlides();
+
+    function showSlides() {
+      const slides = document.getElementsByClassName("slides");
+      for (let i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+      }
+      slideIndex++;
+      if (slideIndex > slides.length) { slideIndex = 1 }
+      slides[slideIndex - 1].style.display = "block";
+      setTimeout(showSlides, 3000); // 3 sec slide change
+    }
+  </script>
+<script>
+  function toggleMenu() {
+    const nav = document.getElementById("navMenu");
+    nav.classList.toggle("show");
+  }
+</script>
+<script>
+  const nav = document.getElementById("navMenu");
+  const hamburger = document.getElementById("hamburger");
+  const closeIcon = document.getElementById("closeIcon");
+
+  function toggleMenu() {
+    nav.classList.toggle("show");
+    const isOpen = nav.classList.contains("show");
+    hamburger.style.display = isOpen ? "none" : "block";
+    closeIcon.style.display = isOpen ? "block" : "none";
+  }
+
+  // Close when clicking outside
+  window.addEventListener("click", function (e) {
+    if (
+      !nav.contains(e.target) &&
+      !hamburger.contains(e.target) &&
+      !closeIcon.contains(e.target)
+    ) {
+      nav.classList.remove("show");
+      hamburger.style.display = "block";
+      closeIcon.style.display = "none";
+    }
+  });
+</script>
+
+</body>
+</html>
