@@ -6,18 +6,22 @@
   <title>Login - House of Niree</title>
   <link rel="stylesheet" href="HON.css" />
 
-  <!-- Firebase SDKs -->
+  <!-- Firebase SDK -->
   <script type="module">
-    // Import Firebase functions
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { 
+      getAuth, 
+      createUserWithEmailAndPassword, 
+      signInWithEmailAndPassword, 
+      onAuthStateChanged, 
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    // Your Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyDAIDgMVPJW70T0RoGNHGTWJ6urRPiHzU8",
       authDomain: "house-of-niree.firebaseapp.com",
       projectId: "house-of-niree",
-      storageBucket: "house-of-niree.firebasestorage.app",
+      storageBucket: "house-of-niree.appspot.com",
       messagingSenderId: "625684329140",
       appId: "1:625684329140:web:45645bfa810169db971de1",
       measurementId: "G-2CL9W1PHL4"
@@ -26,12 +30,12 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Handle form
     window.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById("auth-form");
       const toggle = document.getElementById("toggle-msg");
       const title = document.getElementById("form-title");
       const submitBtn = document.getElementById("submit-btn");
+      const welcomeMsg = document.getElementById("welcome-msg");
       let isLogin = true;
 
       toggle.addEventListener("click", (e) => {
@@ -53,7 +57,9 @@
           signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
               const user = userCredential.user;
-              document.getElementById("welcome-msg").innerText = `Welcome back, ${user.email}!`;
+              welcomeMsg.innerText = `Welcome, ${user.email}!`;
+              alert("Login Successful");
+              window.location.href = "index.html"; // Redirect after login
             })
             .catch((error) => {
               alert("Login failed: " + error.message);
@@ -61,7 +67,7 @@
         } else {
           createUserWithEmailAndPassword(auth, email, password)
             .then(() => {
-              alert("Registration successful! Now login.");
+              alert("Registration successful! You can now login.");
               isLogin = true;
               title.innerText = "Login to House of Niree";
               submitBtn.innerText = "Login";
@@ -73,15 +79,15 @@
         }
       });
 
-      // Show welcome if already logged in
       onAuthStateChanged(auth, (user) => {
         if (user) {
-          document.getElementById("welcome-msg").innerText = `Already logged in as ${user.email}`;
+          welcomeMsg.innerText = `Already logged in as ${user.email}`;
         }
       });
     });
   </script>
 </head>
+
 <body>
   <div class="login-container">
     <h2 id="form-title">Login to House of Niree</h2>
@@ -95,6 +101,5 @@
     </form>
     <p id="welcome-msg" style="text-align: center; color: green; margin-top: 15px;"></p>
   </div>
-  
 </body>
 </html>

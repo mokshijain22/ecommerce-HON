@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Thank You - House of Niree</title>
   <link rel="stylesheet" href="HON.css" />
-  
 
   <style>
     .thank-you {
@@ -38,22 +37,30 @@
       text-decoration: none;
       border-radius: 8px;
       font-weight: bold;
+      margin: 0 8px;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #a4556e;
     }
   </style>
 </head>
+
 <body>
   <div class="thank-you">
     <h1>🎉 Thank You for Your Order!</h1>
-    <p>Your receipt has been downloaded.</p>
+    <p>Your receipt has been downloaded successfully.</p>
     <p>Total Paid: <strong id="show-total">₹0</strong></p>
     <a href="index.html" class="btn">Continue Shopping</a>
     <a href="track.html" class="btn">📦 Track My Orders</a>
-
   </div>
 
   <script>
-    const total = localStorage.getItem("orderTotal");
+    const total = localStorage.getItem("orderTotal") || "0";
     document.getElementById("show-total").innerText = `₹${total}`;
+    localStorage.removeItem("orderTotal"); // Clear the total after showing
+    localStorage.removeItem("cart"); // Optional: Clear cart after order
   </script>
 </body>
 </html>

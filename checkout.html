@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Checkout - House of Niree</title>
-  <link rel="stylesheet" href="HON.css" />
+  <link rel="stylesheet" href="HON.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script>
-    emailjs.init("YWQnPK8PUDEqRckUX"); // 👈 Replace with your EmailJS public key
+    emailjs.init("YWQnPK8PUDEqRckUX"); <!-- Your EmailJS Public Key -->
   </script>
 </head>
+
 <body>
   <header class="navbar">
     <div class="hamburger" onclick="toggleMenu()">☰</div>
@@ -19,8 +20,8 @@
       <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="cart.html">Cart</a></li>
-        <li><a href="login.html">Login</a></li>
         <li><a href="wishlist.html">💖 Wishlist</a></li>
+        <li><a href="login.html">Login</a></li>
       </ul>
     </nav>
   </header>
@@ -28,15 +29,20 @@
   <section class="checkout">
     <a href="cart.html" class="back-to-cart">← Back to Cart</a>
     <h2>Checkout</h2>
+
     <form id="checkout-form">
       <label>Full Name:</label>
-      <input type="text" id="name" required />
+      <input type="text" id="name" required/>
+
       <label>Email:</label>
-      <input type="email" id="email" required />
+      <input type="email" id="email" required/>
+
       <label>Phone Number:</label>
-      <input type="tel" id="phone" required />
+      <input type="tel" id="phone" required/>
+
       <label>Shipping Address:</label>
       <textarea id="address" required></textarea>
+
       <label>Payment Method:</label>
       <select id="payment" required>
         <option value="">Select</option>
@@ -53,6 +59,7 @@
     </form>
   </section>
 
+  <!-- Firebase & Checkout Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -62,7 +69,7 @@
       apiKey: "AIzaSyDAIDgMVPJW70T0RoGNHGTWJ6urRPiHzU8",
       authDomain: "house-of-niree.firebaseapp.com",
       projectId: "house-of-niree",
-      storageBucket: "house-of-niree.firebasestorage.app",
+      storageBucket: "house-of-niree.appspot.com",
       messagingSenderId: "625684329140",
       appId: "1:625684329140:web:45645bfa810169db971de1",
       measurementId: "G-2CL9W1PHL4"
@@ -88,6 +95,12 @@
       const totalDiv = document.getElementById("order-total");
       let total = 0;
 
+      if (cart.length === 0) {
+        alert("Your cart is empty! Please add items.");
+        window.location.href = "cart.html";
+        return;
+      }
+
       cart.forEach(item => {
         const line = document.createElement("p");
         line.innerText = `${item.name} (Qty: ${item.quantity}) - ₹${item.price * item.quantity}`;
@@ -100,11 +113,16 @@
       document.getElementById("checkout-form").addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const name = document.getElementById("name").value;
-        const email = document.getElementById("email").value;
-        const phone = document.getElementById("phone").value;
-        const address = document.getElementById("address").value;
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+        const address = document.getElementById("address").value.trim();
         const payment = document.getElementById("payment").value;
+
+        if (!name || !email || !phone || !address || !payment) {
+          alert("Please fill all fields.");
+          return;
+        }
 
         try {
           await addDoc(collection(db, "orders"), {
@@ -127,43 +145,36 @@
           doc.text("House of Niree - Order Receipt", 20, 20);
           doc.setFontSize(12);
           doc.text(`Name: ${name}`, 20, 30);
-          doc.text(`Email: ${email}`, 20, 40);
-          doc.text(`Phone: ${phone}`, 20, 50);
-          doc.text(`Payment: ${payment}`, 20, 60);
-          doc.text(`Address: ${address}`, 20, 70);
-          doc.text(`Total: ₹${total}`, 20, 80);
+          doc.text(`Email: ${email}`, 20, 38);
+          doc.text(`Phone: ${phone}`, 20, 46);
+          doc.text(`Payment: ${payment}`, 20, 54);
+          doc.text(`Address: ${address}`, 20, 62);
+          doc.text(`Total: ₹${total}`, 20, 70);
 
-          let y = 90;
+          let y = 78;
           cart.forEach((item, i) => {
             doc.text(`${i + 1}. ${item.name} (x${item.quantity}) - ₹${item.price * item.quantity}`, 20, y);
-            y += 10;
+            y += 8;
           });
 
           doc.save("order_receipt.pdf");
 
-          // ✅ EmailJS Send Email
+          // ✅ EmailJS Email
           const orderSummaryText = cart.map(item =>
             `${item.name} x${item.quantity} - ₹${item.price * item.quantity}`
           ).join("\n");
 
-          emailjs.send("service_ylzs5de", "template_nkk2ebj", {
+          await emailjs.send("service_ylzs5de", "template_nkk2ebj", {
             user_name: name,
             order_summary: orderSummaryText,
             order_total: total,
             email: email
-            })
-            .then(() => {
-            console.log("✅ Email sent successfully!");
-            })
-            .catch((error) => {
-            console.error("❌ Email sending failed:", error);
-            });
+          });
 
-            alert("Order placed & receipt downloaded!");
+          alert("Order placed successfully! Receipt downloaded.");
           localStorage.removeItem("cart");
-          localStorage.setItem("orderTotal", total);
-          localStorage.setItem("orderItems", JSON.stringify(cart));
           window.location.href = "thankyou.html";
+
         } catch (err) {
           alert("Failed to place order: " + err.message);
         }

@@ -7,9 +7,13 @@
   <link rel="stylesheet" href="HON.css" />
 </head>
 <body>
+
+  <!-- =================== Navbar =================== -->
   <header class="navbar">
-    <div class="logo">House of Niree</div>
-    <nav>
+    <a href="index.html" class="brand-area">
+      <span class="brand-text">House of Niree</span>
+    </a>
+    <nav class="nav-links" id="navMenu">
       <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="product_detail.html">Products</a></li>
@@ -24,72 +28,77 @@
     <div class="hamburger" onclick="toggleMenu()">☰</div>
   </header>
 
-  <!-- Filter Buttons -->
+  <!-- =================== Filter Buttons =================== -->
   <div class="filter-buttons">
     <button onclick="filterProducts('all')">All</button>
     <button onclick="filterProducts('ethnic')">Ethnic</button>
     <button onclick="filterProducts('western')">Western</button>
     <button onclick="filterProducts('accessories')">Accessories</button>
     <button onclick="filterProducts('shirts')">Shirts</button>
+  </div>
 
-</div>
-
-  <!-- Product Grid -->
+  <!-- =================== Product Grid =================== -->
   <section class="product-grid">
+
+    <!-- Shirt -->
     <div class="product-card" data-category="shirts">
-        <img src="images/shirt1.jpg" alt="Shirt" />
-        <h3>Casual Oversized Shirt</h3>
-        <p>₹999</p>
-        <button onclick="openQuickView('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">Quick View</button>
-        <button onclick="addToWishlist('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">❤️ Save to Wishlist</button>
-    </div>
-
-    <div class="product-card" data-category="shirts" onclick="openQuickView('Striped Cotton Shirt', 999, 'images/shirt2.jpg', 'Stylish striped shirt for a relaxed yet sharp look.')">
-        <img src="images/shirt2.jpg" alt="Striped Shirt" />
-        <h3>Striped Cotton Shirt</h3>
-        <p>₹999</p>
-        <button onclick="openQuickView('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">Quick View</button>
-        <button onclick="addToWishlist('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">❤️ Save to Wishlist</button>
-    </div>
-
-    <div class="product-card" data-category="ethnic" onclick="openQuickView('Pastel Cotton Kurti', 999, 'images/kurtis1.jpg', 'Light pastel cotton kurti for daily elegance.')">
-      <img src="images/kurtis1.jpg" alt="Elegant Kurtis" />
-      <h3>Pastel Cotton Kurti</h3>
+      <img src="images/shirt1.jpg" alt="Shirt"/>
+      <h3>Casual Oversized Shirt</h3>
       <p>₹999</p>
       <button onclick="openQuickView('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">Quick View</button>
       <button onclick="addToWishlist('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">❤️ Save to Wishlist</button>
     </div>
 
-    <div class="product-card" data-category="western" onclick="openQuickView('Floral Summer Dress', 1299, 'images/dress1.jpg', 'Floral dress perfect for brunches and evenings.')">
-      <img src="images/dress1.jpg" alt="Floral Dress" />
+    <div class="product-card" data-category="shirts">
+      <img src="images/shirt2.jpg" alt="Striped Shirt"/>
+      <h3>Striped Cotton Shirt</h3>
+      <p>₹999</p>
+      <button onclick="openQuickView('Striped Cotton Shirt', 999, 'images/shirt2.jpg')">Quick View</button>
+      <button onclick="addToWishlist('Striped Cotton Shirt', 999, 'images/shirt2.jpg')">❤️ Save to Wishlist</button>
+    </div>
+
+    <!-- Ethnic -->
+    <div class="product-card" data-category="ethnic">
+      <img src="images/kurtis1.jpg" alt="Kurti"/>
+      <h3>Pastel Cotton Kurti</h3>
+      <p>₹999</p>
+      <button onclick="openQuickView('Pastel Cotton Kurti', 999, 'images/kurtis1.jpg')">Quick View</button>
+      <button onclick="addToWishlist('Pastel Cotton Kurti', 999, 'images/kurtis1.jpg')">❤️ Save to Wishlist</button>
+    </div>
+
+    <!-- Western -->
+    <div class="product-card" data-category="western">
+      <img src="images/dress1.jpg" alt="Dress"/>
       <h3>Floral Summer Dress</h3>
       <p>₹1299</p>
-      <button onclick="openQuickView('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">Quick View</button>
-      <button onclick="addToWishlist('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">❤️ Save to Wishlist</button>
+      <button onclick="openQuickView('Floral Summer Dress', 1299, 'images/dress1.jpg')">Quick View</button>
+      <button onclick="addToWishlist('Floral Summer Dress', 1299, 'images/dress1.jpg')">❤️ Save to Wishlist</button>
     </div>
 
-    <div class="product-card" data-category="accessories" onclick="openQuickView('Gold-Plated Necklace', 499, 'images/jewelry1.jpg', 'Elegant gold-plated jewelry for every occasion.')">
-      <img src="images/jewelry1.jpg" alt="Jewelry" />
+    <!-- Accessories -->
+    <div class="product-card" data-category="accessories">
+      <img src="images/jewelry1.jpg" alt="Necklace"/>
       <h3>Gold-Plated Necklace</h3>
       <p>₹499</p>
-      <button onclick="openQuickView('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">Quick View</button>
-      <button onclick="addToWishlist('Casual Oversized Shirt', 999, 'images/shirt1.jpg')">❤️ Save to Wishlist</button>
+      <button onclick="openQuickView('Gold-Plated Necklace', 499, 'images/jewelry1.jpg')">Quick View</button>
+      <button onclick="addToWishlist('Gold-Plated Necklace', 499, 'images/jewelry1.jpg')">❤️ Save to Wishlist</button>
     </div>
+
   </section>
 
-  <!-- Quick View Modal -->
+  <!-- =================== Quick View Modal =================== -->
   <div id="quickViewModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
-      <img id="modal-img" src="" alt="Product" />
+      <img id="modal-img" src="" alt="Product"/>
       <h3 id="modal-name"></h3>
       <p id="modal-price"></p>
-      <p id="modal-desc"></p>
+      <p id="modal-desc">Graceful fashion for modern women.</p>
       <button id="modal-add" class="btn">Add to Cart</button>
     </div>
   </div>
 
-  <!-- Firebase Auth + Nav Toggle -->
+  <!-- =================== Firebase Auth =================== -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -98,7 +107,7 @@
       apiKey: "AIzaSyDAIDgMVPJW70T0RoGNHGTWJ6urRPiHzU8",
       authDomain: "house-of-niree.firebaseapp.com",
       projectId: "house-of-niree",
-      storageBucket: "house-of-niree.firebasestorage.app",
+      storageBucket: "house-of-niree.appspot.com",
       messagingSenderId: "625684329140",
       appId: "1:625684329140:web:45645bfa810169db971de1",
       measurementId: "G-2CL9W1PHL4"
@@ -128,11 +137,11 @@
     });
   </script>
 
-  <!-- Filtering, Cart, Modal, Hamburger -->
+  <!-- =================== Product Logic =================== -->
   <script>
     function toggleMenu() {
-      const menu = document.querySelector('.navbar ul');
-      menu.classList.toggle('active');
+      const menu = document.querySelector('.nav-links');
+      menu.classList.toggle('show');
     }
 
     function filterProducts(category) {
@@ -151,6 +160,19 @@
       cart.push({ name, price, quantity: 1 });
       localStorage.setItem("cart", JSON.stringify(cart));
       alert(`${name} added to cart!`);
+    }
+
+    function addToWishlist(name, price, image) {
+      let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+      const exists = wishlist.some(item => item.name === name);
+
+      if (!exists) {
+        wishlist.push({ name, price, image });
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+        alert(`${name} added to wishlist! ❤️`);
+      } else {
+        alert("Already in wishlist!");
+      }
     }
 
     const modal = document.getElementById("quickViewModal");
@@ -177,27 +199,11 @@
     window.onclick = function(event) {
       if (event.target === modal) closeModal();
     }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      filterProducts('all');
+    });
   </script>
-<script>
-  // Show all products when page loads
-  window.addEventListener('DOMContentLoaded', () => {
-    filterProducts('all');
-  });
-
-  function addToWishlist(name, price, image) {
-  let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-  const exists = wishlist.some(item => item.name === name);
-
-  if (!exists) {
-    wishlist.push({ name, price, image });
-    localStorage.setItem("wishlist", JSON.stringify(wishlist));
-    alert(`${name} added to wishlist! ❤️`);
-  } else {
-    alert("Already in wishlist!");
-  }
-}
-
-</script>
 
 </body>
 </html>

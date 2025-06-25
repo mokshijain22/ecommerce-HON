@@ -7,52 +7,63 @@
   <link rel="stylesheet" href="HON.css" />
 </head>
 <body>
+
+  <!-- Navbar -->
   <header class="navbar">
     <div class="logo">House of Niree</div>
     <nav>
       <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="product_detail.html">Products</a></li>
-        <li><a href="wishlist.html">Wishlist</a></li>
         <li><a href="cart.html">Cart</a></li>
         <li><a href="wishlist.html">💖 Wishlist</a></li>
-    </ul>
+      </ul>
     </nav>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
   </header>
-  <section class="wishlist-section">
-     <h2>My Wishlist</h2>
-     <div id="wishlist-items" class="product-grid"></div>
- </section>
 
-  <section class="products">
-    <h2>Your Wishlist 💖</h2>
-    <div class="product-grid" id="wishlist-container"></div>
+  <!-- Wishlist Section -->
+  <section class="wishlist-section">
+    <h2>💖 My Wishlist</h2>
+    <div id="wishlist-items" class="product-grid"></div>
   </section>
 
+  <!-- Script -->
   <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+      const wishlistContainer = document.getElementById("wishlist-items");
 
-  window.addEventListener("DOMContentLoaded", () => {
-    const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-    const wishlistContainer = document.getElementById("wishlist-items");
+      if (wishlist.length === 0) {
+        wishlistContainer.innerHTML = "<p>Your wishlist is empty.</p>";
+        return;
+      }
 
-    if (wishlist.length === 0) {
-      wishlistContainer.innerHTML = "<p>Your wishlist is empty.</p>";
-      return;
+      wishlist.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.className = "product-card";
+        div.innerHTML = `
+          <img src="${item.image}" alt="${item.name}" />
+          <h3>${item.name}</h3>
+          <p>₹${item.price}</p>
+          <button onclick="removeFromWishlist(${index})">❌ Remove</button>
+        `;
+        wishlistContainer.appendChild(div);
+      });
+    });
+
+    function removeFromWishlist(index) {
+      let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+      wishlist.splice(index, 1);
+      localStorage.setItem("wishlist", JSON.stringify(wishlist));
+      location.reload();
     }
 
-    wishlist.forEach(item => {
-      const div = document.createElement("div");
-      div.className = "product-card";
-      div.innerHTML = `
-        <img src="${item.image}" alt="${item.name}" />
-        <h3>${item.name}</h3>
-        <p>₹${item.price}</p>
-      `;
-      wishlistContainer.appendChild(div);
-    });
-  });
-</script>
-
+    function toggleMenu() {
+      const menu = document.querySelector('.navbar ul');
+      menu.classList.toggle('active');
+    }
   </script>
+
 </body>
 </html>

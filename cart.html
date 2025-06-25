@@ -6,20 +6,31 @@
   <title>Your Cart - House of Niree</title>
   <link rel="stylesheet" href="HON.css" />
   <style>
+    .cart {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #fff9f9;
+      border-radius: 10px;
+    }
+    .cart h2 {
+      text-align: center;
+      color: #c97c90;
+      margin-bottom: 20px;
+    }
     .cart-item {
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
+      background: white;
       padding: 16px;
-      margin: 10px 0;
       border-radius: 10px;
-      background-color: #fff;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 12px;
     }
     .cart-item h4 {
-      font-size: 1.1rem;
       color: #c97c90;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
     .qty-controls {
       display: flex;
@@ -27,17 +38,17 @@
       gap: 8px;
     }
     .qty-controls button {
-      padding: 6px 10px;
-      background: #c97c90;
-      color: #fff;
+      padding: 4px 10px;
+      background-color: #c97c90;
+      color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
     }
     .qty-controls span {
+      font-weight: bold;
       min-width: 24px;
       text-align: center;
-      font-weight: bold;
     }
     .cart-item .remove-btn {
       background: none;
@@ -46,19 +57,49 @@
       color: red;
       cursor: pointer;
     }
+    #total {
+      text-align: right;
+      font-size: 1.4rem;
+      margin-top: 20px;
+      color: #a94461;
+    }
+    .btn {
+      display: inline-block;
+      background-color: #c97c90;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 25px;
+      text-decoration: none;
+      margin-top: 15px;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background-color: #a95b70;
+    }
+    .empty-cart {
+      text-align: center;
+      color: #999;
+      margin: 40px 0;
+      font-size: 1.2rem;
+    }
   </style>
 </head>
+
 <body>
   <header class="navbar">
+    <div class="brand-area">
+      <img src="logo.png" alt="Logo" class="brand-icon">
+      <div class="brand-text">House of Niree</div>
+    </div>
     <div class="hamburger" onclick="toggleMenu()">☰</div>
-    <div class="logo">House of Niree</div>
-    <nav>
+    <nav class="nav-links">
       <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="product_detail.html">Products</a></li>
         <li><a href="cart.html">Cart</a></li>
-        <li><a href="login.html">Login</a></li>
         <li><a href="wishlist.html">💖 Wishlist</a></li>
+        <li><a href="#" id="login-link">Login</a></li>
+        <li><a href="#" id="logout-link" style="display:none;">Logout</a></li>
       </ul>
     </nav>
   </header>
@@ -67,16 +108,24 @@
     <h2>Your Shopping Cart</h2>
     <div id="cart-items"></div>
     <h3 id="total">Total: ₹0</h3>
-    <a href="checkout.html" class="btn">Proceed to Checkout</a>
+    <a href="checkout.html" class="btn" id="checkout-btn" style="display:none;">Proceed to Checkout</a>
   </section>
 
   <script>
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
     function renderCart() {
       const container = document.getElementById("cart-items");
-      container.innerHTML = "";
+      const checkoutBtn = document.getElementById("checkout-btn");
       let total = 0;
+      container.innerHTML = "";
+
+      if (cart.length === 0) {
+        container.innerHTML = `<p class="empty-cart">Your cart is empty 🛒</p>`;
+        document.getElementById("total").innerText = "Total: ₹0";
+        checkoutBtn.style.display = "none";
+        return;
+      }
 
       cart.forEach((item, index) => {
         const itemTotal = item.price * item.quantity;
@@ -97,10 +146,12 @@
           </div>
           <button class="remove-btn" onclick="removeItem(${index})">🗑️</button>
         `;
+
         container.appendChild(div);
       });
 
       document.getElementById("total").innerText = `Total: ₹${total}`;
+      checkoutBtn.style.display = "inline-block";
       localStorage.setItem("cart", JSON.stringify(cart));
     }
 
@@ -134,7 +185,7 @@
       apiKey: "AIzaSyDAIDgMVPJW70T0RoGNHGTWJ6urRPiHzU8",
       authDomain: "house-of-niree.firebaseapp.com",
       projectId: "house-of-niree",
-      storageBucket: "house-of-niree.firebasestorage.app",
+      storageBucket: "house-of-niree.appspot.com",
       messagingSenderId: "625684329140",
       appId: "1:625684329140:web:45645bfa810169db971de1",
       measurementId: "G-2CL9W1PHL4"
@@ -143,37 +194,32 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const greeting = document.getElementById("user-greeting");
-    const logoutLink = document.getElementById("logout-link");
     const loginLink = document.getElementById("login-link");
+    const logoutLink = document.getElementById("logout-link");
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        if (greeting) greeting.innerText = `Hi, ${user.email}`;
-        if (logoutLink) logoutLink.style.display = "inline-block";
-        if (loginLink) loginLink.style.display = "none";
+        logoutLink.style.display = "inline-block";
+        loginLink.style.display = "none";
       } else {
-        if (window.location.pathname.includes("cart") || window.location.pathname.includes("checkout")) {
-          window.location.href = "login.html";
-        }
+        logoutLink.style.display = "none";
+        loginLink.style.display = "inline-block";
       }
     });
 
-    if (logoutLink) {
-      logoutLink.addEventListener("click", (e) => {
-        e.preventDefault();
-        signOut(auth).then(() => {
-          alert("Logged out!");
-          window.location.href = "index.html";
-        });
+    logoutLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => {
+        alert("Logged out!");
+        window.location.href = "index.html";
       });
-    }
+    });
   </script>
 
   <script>
     function toggleMenu() {
-      const menu = document.querySelector('.navbar ul');
-      menu.classList.toggle('active');
+      const menu = document.querySelector('.nav-links');
+      menu.classList.toggle('show');
     }
   </script>
 </body>

@@ -6,21 +6,35 @@
   <title>Admin Dashboard - House of Niree</title>
   <link rel="stylesheet" href="HON.css" />
   <style>
+    body {
+      background-color: #fff9f9;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
     .admin-dashboard {
       max-width: 1000px;
-      margin: 40px auto;
+      margin: 60px auto;
       padding: 20px;
-      background: #fff9f9;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+
+    .admin-dashboard h2 {
+      color: #c97c90;
+      text-align: center;
+      margin-bottom: 20px;
     }
 
     .order-card {
-      background: white;
-      border: 1px solid #ffe1eb;
+      background: #fff;
       border-left: 5px solid #c97c90;
       border-radius: 10px;
       padding: 20px;
       margin-bottom: 20px;
-      box-shadow: 0 5px 14px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
     .order-card h3 {
@@ -40,16 +54,25 @@
     .btn, .delete-order-btn, .status-toggle-btn {
       background-color: #c97c90;
       color: white;
-      padding: 8px 14px;
+      padding: 8px 16px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       font-weight: 500;
       margin-right: 10px;
+      transition: background-color 0.3s;
     }
 
     .delete-order-btn {
       background-color: #ff4d4f;
+    }
+
+    .btn:hover, .status-toggle-btn:hover {
+      background-color: #a7586b;
+    }
+
+    .delete-order-btn:hover {
+      background-color: #d9363a;
     }
 
     .status-text.pending {
@@ -61,28 +84,97 @@
       color: green;
       font-weight: bold;
     }
+
+    /* Navbar styles */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 30px;
+      background-color: #fff0f5;
+      border-bottom: 1px solid #eee;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .navbar .logo {
+      font-size: 1.5rem;
+      color: #c97c90;
+      font-weight: bold;
+    }
+
+    .navbar nav ul {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .navbar nav ul li a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .navbar nav ul li a:hover {
+      color: #c97c90;
+    }
+
+    .hamburger {
+      display: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #c97c90;
+    }
+
+    @media (max-width: 768px) {
+      .navbar nav ul {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        right: 20px;
+        top: 60px;
+        background: white;
+        padding: 10px 20px;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        border-radius: 8px;
+      }
+
+      .navbar nav ul.show {
+        display: flex;
+      }
+
+      .hamburger {
+        display: block;
+      }
+    }
   </style>
 </head>
 <body>
-  <header class="navbar">
-    <div class="hamburger" onclick="toggleMenu()">☰</div>
-    <div class="logo">House of Niree</div>
-    <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="login.html">Logout</a></li>
-        <li><a href="wishlist.html">💖 Wishlist</a></li>
 
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo">House of Niree</div>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+    <nav>
+      <ul id="navMenu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="wishlist.html">💖 Wishlist</a></li>
+        <li><a href="login.html">Logout</a></li>
       </ul>
     </nav>
   </header>
 
+  <!-- Admin Dashboard -->
   <section class="admin-dashboard">
     <h2>Order Dashboard</h2>
-    <button id="exportCSV" class="btn" style="margin-bottom: 20px;">📥 Download Orders (CSV)</button>
+    <button id="exportCSV" class="btn">📥 Download Orders (CSV)</button>
     <div id="orders-container"></div>
   </section>
 
+  <!-- Firebase Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -92,10 +184,9 @@
       apiKey: "AIzaSyDAIDgMVPJW70T0RoGNHGTWJ6urRPiHzU8",
       authDomain: "house-of-niree.firebaseapp.com",
       projectId: "house-of-niree",
-      storageBucket: "house-of-niree.firebasestorage.app",
+      storageBucket: "house-of-niree.appspot.com",
       messagingSenderId: "625684329140",
-      appId: "1:625684329140:web:45645bfa810169db971de1",
-      measurementId: "G-2CL9W1PHL4"
+      appId: "1:625684329140:web:45645bfa810169db971de1"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -146,7 +237,6 @@
         div.querySelector(".delete-order-btn").addEventListener("click", async () => {
           const confirmDelete = confirm("Are you sure you want to delete this order?");
           if (!confirmDelete) return;
-
           await deleteDoc(doc(db, "orders", orderId));
           div.remove();
           alert("Order deleted!");
@@ -164,12 +254,16 @@
     });
   </script>
 
+  <!-- Hamburger Menu Script -->
   <script>
     function toggleMenu() {
-      const menu = document.querySelector('.navbar ul');
-      menu.classList.toggle('active');
+      const menu = document.getElementById("navMenu");
+      menu.classList.toggle("show");
     }
+  </script>
 
+  <!-- CSV Export Script -->
+  <script>
     document.getElementById("exportCSV").addEventListener("click", () => {
       const rows = [["Name", "Email", "Phone", "Payment", "Address", "Total", "Date", "Items", "Status"]];
       const cards = document.querySelectorAll(".order-card");
