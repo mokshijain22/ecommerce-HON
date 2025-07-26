@@ -1,69 +1,96 @@
+<!-- wishlist.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Wishlist - House of Niree</title>
-  <link rel="stylesheet" href="HON.css" />
+  <meta charset="UTF-8">
+  <title>My Wishlist - House of Niree</title>
+  <link rel="stylesheet" href="HON.css">
+  <style>
+    .wishlist-container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 2rem;
+    }
+    .wishlist-title {
+      font-size: 2rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .wishlist-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+    .wishlist-item {
+      border: 1px solid #ddd;
+      border-radius: 16px;
+      padding: 1rem;
+      background: #fff;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease;
+    }
+    .wishlist-item:hover {
+      transform: scale(1.03);
+    }
+    .wishlist-item img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+    .wishlist-item h3 {
+      margin: 0.5rem 0;
+    }
+    .remove-btn {
+      background-color: #e74c3c;
+      border: none;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+  </style>
 </head>
 <body>
+  <div class="wishlist-container">
+    <h1 class="wishlist-title">My Wishlist</h1>
+    <div id="wishlist-items" class="wishlist-items"></div>
+  </div>
 
-  <!-- Navbar -->
-  <header class="navbar">
-    <div class="logo">House of Niree</div>
-    <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="product_detail.html">Products</a></li>
-        <li><a href="cart.html">Cart</a></li>
-        <li><a href="wishlist.html">💖 Wishlist</a></li>
-      </ul>
-    </nav>
-    <div class="hamburger" onclick="toggleMenu()">☰</div>
-  </header>
-
-  <!-- Wishlist Section -->
-  <section class="wishlist-section">
-    <h2>💖 My Wishlist</h2>
-    <div id="wishlist-items" class="product-grid"></div>
-  </section>
-
-  <!-- Script -->
   <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-      const wishlistContainer = document.getElementById("wishlist-items");
+    const wishlistItemsContainer = document.getElementById('wishlist-items');
+    let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
 
+    function renderWishlist() {
+      wishlistItemsContainer.innerHTML = '';
       if (wishlist.length === 0) {
-        wishlistContainer.innerHTML = "<p>Your wishlist is empty.</p>";
+        wishlistItemsContainer.innerHTML = '<p style="text-align:center">Your wishlist is empty.</p>';
         return;
       }
 
       wishlist.forEach((item, index) => {
-        const div = document.createElement("div");
-        div.className = "product-card";
-        div.innerHTML = `
-          <img src="${item.image}" alt="${item.name}" />
-          <h3>${item.name}</h3>
+        const card = document.createElement('div');
+        card.className = 'wishlist-item';
+        card.innerHTML = `
+          <img src="${item.image}" alt="${item.title}">
+          <h3>${item.title}</h3>
           <p>₹${item.price}</p>
-          <button onclick="removeFromWishlist(${index})">❌ Remove</button>
+          <button class="remove-btn" onclick="removeFromWishlist(${index})">Remove</button>
         `;
-        wishlistContainer.appendChild(div);
+        wishlistItemsContainer.appendChild(card);
       });
-    });
+    }
 
     function removeFromWishlist(index) {
-      let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
       wishlist.splice(index, 1);
-      localStorage.setItem("wishlist", JSON.stringify(wishlist));
-      location.reload();
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      renderWishlist();
     }
 
-    function toggleMenu() {
-      const menu = document.querySelector('.navbar ul');
-      menu.classList.toggle('active');
-    }
+    renderWishlist();
   </script>
-
 </body>
 </html>

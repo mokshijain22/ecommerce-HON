@@ -29,6 +29,23 @@ a:hover {
 }
 
 /* =================== Navbar =================== */
+.nav-links ul li a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #222;
+  transition: color 0.3s ease;
+}
+
+.nav-links ul li a:hover {
+  color: #e91e63;
+}
+
+.nav-links ul li a i {
+  font-size: 18px;
+}
 .navbar {
   display: flex;
   justify-content: space-between;

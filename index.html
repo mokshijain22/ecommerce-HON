@@ -6,6 +6,9 @@
   <title>House of Niree</title>
   <link rel="stylesheet" href="HON.css" />
   <link rel="icon" type="image/png" href="images/favicon.png" />
+  <!-- Font Awesome CDN for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 </head>
 
 <body>
@@ -16,17 +19,35 @@
     <img src="images/brand-tag.jpg" alt="House of Niree Logo" class="brand-icon" />
     <span class="brand-text">House of Niree</span>
   </a>
+<nav class="nav-links" id="navMenu">
+  <ul>
+    <li>
+      <a href="newin.html">
+        New In
+      </a>
+    </li>
+    
+    <li>
+      <a href="wishlist.html">
+        <i class="fas fa-heart"></i> Wishlist
+      </a>
+    </li>
 
-  <nav class="nav-links" id="navMenu">
-    <ul>
-      <li><a href="#">New In</a></li>
-      <li><a href="product_detail.html">Ethnic</a></li>
-      <li><a href="product_detail.html">Western</a></li>
-      <li><a href="product_detail.html">Accessories</a></li>
-      <li><a href="wishlist.html">💖 Wishlist</a></li>
-      <li><a href="#">Sale</a></li>
-    </ul>
-  </nav>
+    <li>
+      <a href="cart.html">
+        <i class="fas fa-shopping-cart"></i> Cart <span id="cart-count">(0)</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="login.html">
+        <i class="fas fa-user"></i> Login
+      </a>
+    </li>
+  </ul>
+</nav>
+
+
 
   <div class="hamburger" onclick="toggleMenu()" id="hamburger">&#9776;</div>
   <div class="close-icon" onclick="toggleMenu()" id="closeIcon">&times;</div>
@@ -49,43 +70,12 @@
 </section>
 
 <!-- =================== Featured Collections =================== -->
-<section class="collections">
-  <h2>Featured Collections</h2>
-  <div class="collection-grid">
-    <div class="collection-card">
-      <img src="images/shirt1.jpg" alt="Embroidered Shirt" />
-      <h3>Embroidered Shirt</h3>
-      <p class="price">₹999</p>
-      <a href="embroidered_shirt.html" class="btn">View</a>
-    </div>
 
-    <div class="collection-card">
-      <img src="images/evening.jpg" alt="Evening Wear"/>
-      <h3>Elegant Evening Wear</h3>
-      <p class="price">₹1499</p>
-      <a href="#" class="btn">View</a>
-    </div>
 
-    <div class="collection-card">
-      <img src="images/casual.jpg" alt="Casual Styles"/>
-      <h3>Chic Casual Styles</h3>
-      <p class="price">₹799</p>
-      <a href="#" class="btn">View</a>
-    </div>
 
-    <div class="collection-card">
-      <img src="images/outerwear.jpg" alt="Outerwear"/>
-      <h3>Sophisticated Outerwear</h3>
-      <p class="price">₹1799</p>
-      <a href="#" class="btn">View</a>
-    </div>
-  </div>
-</section>
 
 <!-- =================== Style Assistant =================== -->
-<div class="assistant-button">
-  <button class="btn">🪄 Style Assistant</button>
-</div>
+
 
 <!-- =================== Footer =================== -->
 <footer class="footer">
@@ -130,6 +120,16 @@
     slides[slideIndex - 1].style.display = "block";
     setTimeout(showSlides, 3000);
   }
+  
+</script>
+<script>
+  function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    document.getElementById('cart-count').textContent = `(${cart.length})`;
+  }
+
+  // Call the function once the page loads
+  updateCartCount();
 </script>
 
 </body>
